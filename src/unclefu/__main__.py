@@ -37,6 +37,13 @@ def _debug_root() -> Path:
     return default_db_path().parent / "debug"
 
 
+def _is_bundled() -> bool:
+    """True if we're running inside a packaged .app bundle (Contents/Resources/unclefu/).
+    Used to flip a few defaults — debug logging on, etc. — that make sense
+    for double-clicked-from-/Applications use but not for `uv run` dev sessions."""
+    return ".app/Contents/" in str(Path(__file__).resolve())
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(prog="unclefu")
     parser.add_argument("--model", default=DEFAULT_MODEL,
@@ -102,8 +109,14 @@ def main() -> int:
                     pass
             return 1
 
+    # Debug logging defaults:
+    #  - explicit --debug / --debug-log always wins
+    #  - bundled .app: ON by default. There's no terminal to pass flags
+    #    from, and the "Open debug folder" menu item only does anything
+    #    useful when logs actually exist.
+    #  - CLI / `uv run` dev mode: OFF unless --debug is passed.
     debug_log_path = args.debug_log
-    if args.debug and debug_log_path is None:
+    if debug_log_path is None and (args.debug or (not args.cli and _is_bundled())):
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         debug_log_path = _debug_root() / f"session_{ts}.log"
 

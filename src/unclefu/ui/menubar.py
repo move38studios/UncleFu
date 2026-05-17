@@ -576,15 +576,17 @@ class MenuBarApp:
             )
 
     def _open_debug(self, _sender) -> None:
+        """Open the debug folder. If this session is writing debug logs,
+        that's the same folder as `handle.debug_log.path.parent`. If not,
+        we fall back to the canonical debug root next to the session DB
+        so the click does something useful either way (an empty folder is
+        a clearer signal than a no-op)."""
         assert self.handle is not None
-        path = self.handle.debug_log.path.parent if self.handle.debug_log else None
-        if path is None:
-            rumps.notification(
-                title="Uncle Fu",
-                subtitle="No debug log this session",
-                message="Re-run with --debug to enable.",
-            )
-            return
+        if self.handle.debug_log is not None:
+            path = self.handle.debug_log.path.parent
+        else:
+            path = self.handle.log.db_path.parent / "debug"
+        path.mkdir(parents=True, exist_ok=True)
         subprocess.run(["open", str(path)], check=False)
 
     def _open_db(self, _sender) -> None:
