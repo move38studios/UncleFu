@@ -7,4 +7,5 @@ Notes for ourselves while building Uncle Fu. Not user-facing docs.
 - [decisions.md](decisions.md) — load-bearing choices with the reasoning behind them.
 - [voice_design.md](voice_design.md) — per-personality voice baking via Qwen3-TTS.
 - [sprite_design.md](sprite_design.md) — per-personality sprite generation pipeline.
+- [lite_v2_speculative.md](lite_v2_speculative.md) — speculation on a radically lean rewrite (Accessibility + Vision OCR + tiny MLX LLM + `say`) that any Mac user could run.
 - [ideas.md](ideas.md) — parking lot for future features.
