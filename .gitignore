@@ -1,0 +1,26 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Test / tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Editor / OS junk
+.DS_Store
+.claude/
+
+# packaging build artifacts
+packaging/_build/
+packaging/_export/
+packaging/_wheels/
+packaging/requirements/
+packaging/__pycache__/

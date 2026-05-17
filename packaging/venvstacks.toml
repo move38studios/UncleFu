@@ -1,0 +1,90 @@
+# venvstacks config for Uncle Fu.app.
+#
+# Layer model (per LM Studio's venvstacks):
+# - runtime   : the bundled CPython interpreter
+# - framework : heavy, slow-changing ML deps (mlx, mlx-vlm, transformers, …)
+# - application : light, fast-changing app deps (rumps, pyobjc, …) +
+#                 launch_module pointing at our code
+#
+# Pattern lifted from oMLX (github.com/jundot/omlx) with the deps trimmed
+# to what we actually use — oMLX ships a server, embeddings, Kokoro, etc.,
+# none of which apply here.
+#
+# mlx-audio is intentionally NOT listed in the framework requirements: it
+# pins mlx-lm==0.31.1 which conflicts with mlx-vlm's own mlx-lm pin and the
+# resolver refuses. packaging/build.py installs mlx-audio --no-deps after
+# the layer build, same workaround oMLX uses.
+
+[[runtimes]]
+name = "cpython-3.12"
+python_implementation = "cpython@3.12.8"
+requirements = []
+platforms = ["macosx_arm64"]
+
+
+[[frameworks]]
+name = "unclefu-fw"
+runtime = "cpython-3.12"
+requirements = [
+    # Vision-language model
+    "mlx-vlm>=0.5.0",
+    # Transformers — pulls AutoTokenizer for both VLM and TTS paths.
+    # 5.x's tokenization_mistral_common imports ReasoningEffort which
+    # only exists in mistral-common>=1.10 (mlx-audio audio extras),
+    # so we floor it explicitly.
+    "transformers>=5.0.0",
+    "tokenizers>=0.19.0",
+    "huggingface-hub>=0.23.0",
+    "numpy>=1.24.0",
+    "tqdm>=4.66.0",
+    "sentencepiece",
+    "protobuf",
+    "Pillow>=12.0.0",
+    # mlx-audio runtime deps (mlx-audio itself installed --no-deps below)
+    "scipy>=1.11.0",
+    "librosa>=0.10.0",
+    "miniaudio>=1.59",
+    "numba>=0.59.0",
+    "pyloudnorm>=0.1.0",
+    "sounddevice>=0.4.6",
+    "mistral-common[audio]>=1.10",
+]
+platforms = ["macosx_arm64"]
+# cv2 ships duplicate dylibs that overlap with Pillow's. dedupe to save MB.
+dynlib_exclude = [
+    "cv2/.dylibs/libavif*",
+    "cv2/.dylibs/liblcms2*",
+    "cv2/.dylibs/libpng16*",
+    "cv2/.dylibs/libtiff*",
+    "cv2/.dylibs/libfreetype*",
+    "cv2/.dylibs/libharfbuzz*",
+    "cv2/.dylibs/liblzma*",
+    "cv2/.dylibs/libxcb*",
+    "cv2/.dylibs/libXau*",
+]
+
+
+[[applications]]
+name = "unclefu-app"
+launch_module = "unclefu"
+frameworks = ["unclefu-fw"]
+requirements = [
+    "rumps>=0.4.0",
+    "mss>=10.2.0",
+    "pydantic>=2.13.4",
+    "pyobjc-core>=12.1",
+    "pyobjc-framework-AVFoundation>=12.1",
+    "pyobjc-framework-Cocoa>=12.1",
+    "pyobjc-framework-CoreMediaIO>=12.1",
+    "pyobjc-framework-Quartz>=12.1",
+]
+platforms = ["macosx_arm64"]
+
+
+[tool.uv]
+# Freeze the package index so subsequent builds are reproducible without
+# locking us into a single moment. Bump when we want fresh deps.
+exclude-newer = "2026-05-16T00:00:00Z"
+environments = [
+    "sys_platform == 'darwin' and platform_machine == 'arm64'",
+]
