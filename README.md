@@ -31,6 +31,14 @@ If you slide into YouTube, scroll Reddit, get sucked into a Wikipedia rabbit hol
 
 Everything runs locally. Nothing leaves your Mac. Not a single frame ever touches a cloud.
 
+<div align="center">
+
+[![Watch the walkthrough](https://img.youtube.com/vi/HiLTkGs5z14/maxresdefault.jpg)](https://www.youtube.com/watch?v=HiLTkGs5z14)
+
+*▶ Watch the walkthrough (7 min)*
+
+</div>
+
 ---
 
 ## Quick start
