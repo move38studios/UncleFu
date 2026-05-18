@@ -202,8 +202,6 @@ Python 3.12, `uv` for env management, [`venvstacks`](https://github.com/lmstudio
 
 Plain English: you can read, fork, modify, share, and run Uncle Fu for any **noncommercial** purpose — personal use, education, research, charitable / public-sector organizations. You **cannot** sell Uncle Fu or a derivative as a product, bundle it into a commercial offering, or use it inside a for-profit business without a separate commercial license from the copyright holder.
 
-A real OSI-approved license is not a fit here: this is a product, and the planned business model (premium personality packs) only works if the project isn't trivially cloneable as a paid app by someone else. The PolyForm Noncommercial license is purpose-built for exactly that: source-available, free for everyone who isn't trying to make money off it.
-
 If you want to use Uncle Fu commercially, reach out.
 
 ---
